@@ -39,6 +39,14 @@ head(test_df, 5)#works nicely!
 
 
 #(Step 3!!! Create a DataFrame with one Label of each category)
+    #df_unique = train_df.copy().drop_duplicates(subset=["Label"]).reset_index()
+    #essentially this would make a copy and drop duplicates
+unique_df <- test_df %>% 
+# distinct() removes duplicate rows based on the Label column and keep_all = TRUE' keeps all columns in the output
+  distinct(Label, .keep_all = TRUE)
+
+# Display some pictures of the dataset
+#they want to create a 6*6 column with picture size (8,7)<--Magick can help with that...maybe
 
 
 #Kritik Seth, "Fruits and Vegetables Image Recognition Dataset," Kaggle 2020 [https://www.kaggle.com/kritikseth/fruit-and-vegetable-image-recognition]

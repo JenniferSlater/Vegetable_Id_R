@@ -39,8 +39,9 @@ head(test_df, 5)#works nicely!
 
 
 #(Step 3!!! Create a DataFrame with one Label of each category)
-    #df_unique = train_df.copy().drop_duplicates(subset=["Label"]).reset_index()
-    #essentially this would make a copy and drop duplicates
+
+#df_unique = train_df.copy().drop_duplicates(subset=["Label"]).reset_index()
+#essentially this would make a copy and drop duplicates
 unique_df <- test_df %>% 
 # distinct() removes duplicate rows based on the Label column and keep_all = TRUE' keeps all columns in the output
   distinct(Label, .keep_all = TRUE)
@@ -48,6 +49,31 @@ unique_df <- test_df %>%
 # Display some pictures of the dataset
 #they want to create a 6*6 column with picture size (8,7)<--Magick can help with that...maybe
 
+# For each image, read it and add the label below
+imgs <- list()
+for (i in 1:nrow(unique_df)) {
+  img <- image_read(unique_df$Filepath[i])
+  img <- image_annotate(img, unique_df$Label[i], size = 20, gravity = "south",
+                        color = "white", boxcolor = "black")
+  imgs[[i]] <- img
+}
+
+rows <- list()
+for (i in seq(1, length(imgs), by = 6)) {
+  # Get up to 6 images safely
+  row_imgs <- imgs[i:min(i + 5, length(imgs))]
+  
+  # Convert list of images to magick-image vector
+  row_vec <- do.call(c, row_imgs)
+  
+  # Append horizontally (side-by-side)
+  rows[[length(rows) + 1]] <- image_append(row_vec)
+}
+
+# Stack rows vertically
+final_grid <- image_append(do.call(c, rows), stack = TRUE)
+
+print(final_grid)
 
 #Kritik Seth, "Fruits and Vegetables Image Recognition Dataset," Kaggle 2020 [https://www.kaggle.com/kritikseth/fruit-and-vegetable-image-recognition]
 
